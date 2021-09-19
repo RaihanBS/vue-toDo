@@ -1,5 +1,5 @@
 <template>
-    <div>
+  <div>
     <h1>ToDo List</h1>
     <input
       type="text"
@@ -54,19 +54,19 @@
       <div>
         <button
           v-bind:class="{ active: filter == 'all' }"
-          v-on:click="filter = 'all'"
+          v-on:click="changeFilter('all')"
         >
           All
         </button>
         <button
           v-bind:class="{ active: filter == 'active' }"
-          v-on:click="filter = 'active'"
+          v-on:click="changeFilter('active')"
         >
           Active
         </button>
         <button
           v-bind:class="{ active: filter == 'completed' }"
-          v-on:click="filter = 'completed'"
+          v-on:click="changeFilter('completed')"
         >
           Completed
         </button>
@@ -86,25 +86,17 @@ export default {
   name: "ToDo",
   data() {
     return {
-      toDoList: [],
       task: "",
-      toDoId: 1,
-      filter: "all"
+      toDoId: 1
     };
   },
   methods: {
     addToDo() {
-      this.toDoList.push({
-        id: this.toDoId++,
-        title: this.task,
-        completed: false,
-        edited: false
-      });
-
+      this.$store.commit("addToDo", { id: this.toDoId++, title: this.task });
       this.task = "";
     },
     removeToDo(index) {
-      this.toDoList.splice(index, 1);
+      this.$store.commit("removeToDo", { index: index });
     },
     editToDo(toDo) {
       toDo.edited = true;
@@ -113,10 +105,13 @@ export default {
       toDo.edited = false;
     },
     checkAll() {
-      this.toDoList.forEach(toDo => (toDo.completed = event.target.checked));
+      this.$store.commit("checkAll");
     },
     clearCompleted() {
-      this.toDoList = this.toDoList.filter(toDo => !toDo.completed);
+      this.$store.commit("clearCompleted");
+    },
+    changeFilter(filter) {
+      this.$store.commit("updateFilter", { filter: filter });
     }
   },
   directives: {
@@ -128,22 +123,19 @@ export default {
   },
   computed: {
     uncompleted() {
-      return this.toDoList.filter(toDo => !toDo.completed).length;
+      return this.$store.getters.uncompleted;
     },
     nothingRemains() {
-      return this.uncompleted !== 0;
+      return this.$store.getters.nothingRemains;
     },
     filteredToDoList() {
-      if (this.filter === "all") {
-        return this.toDoList;
-      } else if (this.filter === "active") {
-        return this.toDoList.filter(toDo => !toDo.completed);
-      } else if (this.filter === "completed") {
-        return this.toDoList.filter(toDo => toDo.completed);
-      }
+      return this.$store.getters.filteredToDoList;
     },
     showClearButton() {
-      return this.toDoList.filter(toDo => toDo.completed).length > 0;
+      return this.$store.getters.showClearButton;
+    },
+    filter() {
+      return this.$store.state.filter;
     }
   }
 };
@@ -179,7 +171,7 @@ export default {
 }
 
 .toDo-edit {
-  font-size: 24px;
+  font-size: 20px;
   margin-left: 12px;
   width: 100%;
 }
