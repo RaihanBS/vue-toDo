@@ -4,12 +4,12 @@
     <input
       type="text"
       placeholder="What needs to be done?"
-      class="input-box"
-      v-model="taskInput"
-      v-on:keyup.enter="newToDo"
+      class="todo-input"
+      v-model="task"
+      v-on:keyup.enter="addToDo"
     />
     <div
-      v-for="(toDo, index) in toDoListFiltered"
+      v-for="(toDo, index) in filteredToDoList"
       v-bind:key="toDo.id"
       class="toDo"
     >
@@ -59,14 +59,14 @@
           All
         </button>
         <button
-          :class="{ active: filter == 'active' }"
-          @click="filter = 'active'"
+          v-bind:class="{ active: filter == 'active' }"
+          v-on:click="filter = 'active'"
         >
           Active
         </button>
         <button
-          :class="{ active: filter == 'completed' }"
-          @click="filter = 'completed'"
+          v-bind:class="{ active: filter == 'completed' }"
+          v-on:click="filter = 'completed'"
         >
           Completed
         </button>
@@ -87,21 +87,21 @@ export default {
   data() {
     return {
       toDoList: [],
-      taskInput: "",
+      task: "",
       toDoId: 1,
       filter: "all"
     };
   },
   methods: {
-    newToDo() {
+    addToDo() {
       this.toDoList.push({
         id: this.toDoId++,
-        title: this.taskInput,
+        title: this.task,
         completed: false,
         edited: false
       });
 
-      this.taskInput = "";
+      this.task = "";
     },
     removeToDo(index) {
       this.toDoList.splice(index, 1);
@@ -133,7 +133,7 @@ export default {
     nothingRemains() {
       return this.uncompleted !== 0;
     },
-    toDoListFiltered() {
+    filteredToDoList() {
       if (this.filter === "all") {
         return this.toDoList;
       } else if (this.filter === "active") {
@@ -150,7 +150,7 @@ export default {
 </script>
 
 <style>
-.input-box {
+.todo-input {
   width: 100%;
   padding: 16px;
   margin: 10px auto;
