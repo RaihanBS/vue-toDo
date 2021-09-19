@@ -5,14 +5,14 @@
 </template>
 
 <script>
-import ToDo from './components/ToDo.vue'
+import ToDo from "./components/ToDo.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     ToDo
   }
-}
+};
 </script>
 
 <style>
@@ -21,7 +21,7 @@ export default {
 }
 
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
